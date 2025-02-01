@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Единое видео и «окна»</title>
+  <style>
+    /* Сбрасываем базовые отступы и растягиваем на весь экран */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000; /* запасной цвет, пока грузится видео */
+    }
+
+    /* --- Блок с фоновым видео (на заднем плане) --- */
+    .video-container {
+      position: fixed;  /* чтобы растянуть по всему экрану */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;       /* самый задний слой */
+      overflow: hidden;
+    }
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;  /* заполнять блок, обрезая лишнее */
+    }
+
+    /* --- Наложение чёрного слоя поверх видео --- */
+    .overlay {
+      position: relative; /* поверх видео */
+      z-index: 1;         /* выше, чем видео */
+      width: 100%;
+      min-height: 100vh;  /* чтобы занимать всю высоту экрана */
+      background: black;  /* сплошной чёрный фон */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* добавим немного отступов */
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    /* --- Текст, который будет сверху, белым --- */
+    .hero-text {
+      color: #fff;
+      font-size: 2rem;
+      line-height: 1.4;
+      max-width: 800px;
+      text-align: center;
+      margin: 0; /* сброс лишних отступов, если это <h1> */
+    }
+
+    /* --- «Окна», через которые видно видео --- */
+    .window {
+      display: inline-block;
+      width: 70px;
+      height: 40px;
+      margin: 0 8px;                 /* небольшие отступы слева/справа */
+      vertical-align: middle;
+      background: #fff;             /* белый цвет для mix-blend-mode */
+      mix-blend-mode: destination-out; 
+      /* 
+         При destination-out: 
+         белые участки вырезаются из родительского фона (чёрного), 
+         делая их прозрачными и позволяя видеть то, что под .overlay 
+         (т.е. наше видео).
+      */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- (1) Видео на заднем плане -->
+  <div class="video-container">
+    <video autoplay loop muted playsinline>
+      <source src="./video.mp4" type="video/mp4">
+      <!-- fallback-текст для старых браузеров -->
+      Ваш браузер не поддерживает видео.
+    </video>
+  </div>
+
+  <!-- (2) Чёрный слой поверх (с текстом и «дырками») -->
+  <div class="overlay">
+    <h1 class="hero-text">
+      We`re here
+      <span class="window"></span>
+      to make healthy
+      <span class="window"></span>
+      living effortless, so you can
+      <span class="window"></span>
+      live longer and happier
+      <span class="window"></span>
+    </h1>
+  </div>
+
+</body>
+</html>
